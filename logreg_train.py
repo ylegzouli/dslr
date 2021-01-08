@@ -5,7 +5,15 @@ from describe import init_dataset
 
 #---------------------------------------------------------------------
 
-def     set_data():
+def     set_data(data_path):
+    data = init_dataset(data_path)
+    
+    features = data[0, :] 
+    targets = data[1:, 1]
+    
+    print ("features ----> ", features)
+    print ("targets ----> ", targets)
+    print (len(targets))
     return (features, targets)
 
 
@@ -32,6 +40,6 @@ def     train(features, target, weigths, bias):
 #---------------------------------------------------------------------
 
 if __name__ == '__main__':
-    features, targets = get_dataset()
-    weights, bias = init_variables()
-    train(features, targets, weights, bias)
+    features, targets = set_data("dataset_train.csv")
+    # weights, bias = init_variables()
+    # train(features, targets, weights, bias)
