@@ -1,5 +1,4 @@
 import numpy as np
-import csv
 import math
 from describe import init_dataset
 
@@ -21,7 +20,7 @@ def     init_variables():
     return (weights, bias)
 
 
-def     get_cost(predictions, targets):
+def     cost(predictions, targets):
     return np.mean((predictions - targets) ** 2)
 
 
