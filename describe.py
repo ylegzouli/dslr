@@ -1,11 +1,30 @@
-from sys import argv
 import numpy as np
 import csv
 import math
+from sys import argv
 
 #---------------------------------------------------------------------
 
-def init_dataset(data_path):
+def     percentile(N, percent):
+    N.sort()
+    k = (len(N) - 1) * percent
+    f = math.floor(k)
+    c = math.ceil(k)
+    if f == c:
+        return N[int(k)]
+    d0 = N[int(f)] * (c - k)
+    d1 = N[int(c)] * (k - f)
+    return d0 + d1
+
+
+def     equart_type(X, mean):
+    total = 0
+    for x in X:
+        total = total + (x - mean) ** 2
+    return (total / len(X)) ** 0.5
+
+
+def     init_dataset(data_path):
     dataset = list()
     with open(data_path) as csvfile:
         reader = csv.reader(csvfile)
@@ -24,28 +43,8 @@ def init_dataset(data_path):
             print("error in dataset")
     return np.array(dataset)
 
-#---------------------------------------------------------------------
 
-def percentile(N, percent):
-    N.sort()
-    k = (len(N) - 1) * percent
-    f = math.floor(k)
-    c = math.ceil(k)
-    if f == c:
-        return N[int(k)]
-    d0 = N[int(f)] * (c - k)
-    d1 = N[int(c)] * (k - f)
-    return d0 + d1
-
-def equart_type(X, mean):
-    total = 0
-    for x in X:
-        total = total + (x - mean) ** 2
-    return (total / len(X)) ** 0.5
-
-#---------------------------------------------------------------------
-
-def describe():
+def     describe():
     if len(argv) > 1:
         data = init_dataset(argv[1])
     else:
