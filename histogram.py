@@ -26,7 +26,7 @@ def     histogram():
     h4 = X[1299:]
     h4 = h4[~np.isnan(h4)]
     plt.hist(h4, color='green', alpha=0.5)
-    plt.legend(['Grynffindor', 'Hufflepuff', 'Ravenclaw', 'Slytherin'], loc='upper right', frameon=False)
+    plt.legend(['Gryffindor', 'Hufflepuff', 'Ravenclaw', 'Slytherin'], loc='upper right', frameon=False)
     plt.title(dataset[0, 16])
     plt.xlabel("Mark")
     plt.ylabel("Nb student")
