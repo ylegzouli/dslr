@@ -12,13 +12,14 @@ def     set_data(data_path):
     features = features.astype(np.float128)
     
     targets = data[1:, 1]
-    targets[(targets != 'Gryffindor')] = 0 
-    targets[(targets == 'Gryffindor')] = 1 
+    targets[(targets != 'Gryffindor')] = 0. 
+    targets[(targets == 'Gryffindor')] = 1.
+    targets = targets.astype(np.float128) 
     
     # print ("features ----> ", features[:, 0])
     # print ("features ----> ", features[:, 1])
-    print ("features ----> ", features)
-    print ("targets ----> ", targets)
+    # print ("features ----> ", features)
+    # print ("targets ----> ", targets)
     # print (targets.shape)
     # print (features.shape)
     # plt.scatter(features[:, 1], features[:, 2], c=targets)
@@ -27,7 +28,9 @@ def     set_data(data_path):
 
 
 def     init_variables():
-    weights = np.random.normal(size=13, dtype=np.float128)
+    # weights = np.zeros((13, 1))
+    weights = np.random.normal(size=13)
+    weights = weights.astype(np.float128)
     bias = 0
 
     # print (weights, bias)
@@ -35,15 +38,24 @@ def     init_variables():
 
 
 def     cost(predictions, targets):
-    return np.mean((predictions - targets) ** 2)
+    # print (predictions, targets)
+    # print ("ici", (predictions - targets) ** 2)
+    ret = np.nanmean((predictions - targets) ** 2)
+    return ret
 
 
 def     pre_activation(features, weights, bias):
-    return np.dot(features, weights) + bias
+    ret = np.dot(features, weights) + bias
+    ret = ret.astype(np.float128)
+    return ret
 
 
 def     activation(z):
     return 1 / (1 + np.exp(-z))
+
+
+def     derivative_activation(z):
+    return activation(z) * (1 - activation(z))
 
 
 def     predict(features, weights, bias):
@@ -54,26 +66,35 @@ def     predict(features, weights, bias):
 
 def     train(features, target, weights, bias):
     predictions = predict(features, weights, bias)
+    predictions = predictions.astype(np.float128) 
     print("Accuracy = %s" % np.mean(predictions == targets))
     
-    # epochs = 100
-    # learning_rate = 0.1
+    epochs = 100
+    learning_rate = 0.1
     
-    # for epoch in range(epochs):
-    #     if epoch % 10 == 0:
-    #         predictions = activation(pre_activation(features, weights, bias))
-    #         print("Current cost = %s" % cost(predictions, targets))
-    #     weights_gradients = np.zeros(weights.shape)
-    #     bias_gradient = 0.
-    #     for feature, target in zip(features, targets):
-    #         z = pre_activation(feature, weights, bias)
-    #         y = activation(z)
-    #         weights_gradients += (y - target) * derivative_activation(z) * feature
-    #         bias_gradient += (y - target) * derivative_activation(z)
-    #     weights = weights - (learning_rate * weights_gradients)
-    #     bias = bias - (learning_rate * bias_gradient)
-    # predictions = predict(features, weights, bias)
-    # print("Accuracy = %s" % np.mean(predictions == targets))
+    for epoch in range(epochs):
+        if epoch % 10 == 0:
+            predictions = activation(pre_activation(features, weights, bias))
+            predictions = predictions.astype(np.float128)
+            # print("Predictions = %s" % predictions)
+            # print("Current cost = %s" % cost(predictions, targets))
+        
+        weights_gradients = np.zeros(weights.shape)
+        # weights_gradients = weights_gradients.astype(np.float128)
+        print ("gradient: ", weights_gradients)
+        bias_gradient = 0.
+        for feature, target in zip(features, targets):
+            z = pre_activation(feature, weights, bias)
+            y = activation(z)
+            print (z)
+            weights_gradients += (y - target) * derivative_activation(z) * feature
+            bias_gradient += (y - target) * derivative_activation(z)
+        weights = weights - (learning_rate * weights_gradients)
+        bias = bias - (learning_rate * bias_gradient)
+    
+    predictions = predict(features, weights, bias)
+    print(predictions)
+    print("Accuracy = %s" % np.mean(predictions == targets))
     return
 
 
