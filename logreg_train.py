@@ -15,71 +15,109 @@ def     set_data(data_path):
     targets[(targets != 'Gryffindor')] = 0. 
     targets[(targets == 'Gryffindor')] = 1.
     targets = targets.astype(np.float128) 
+    
+    # print ("features: ", features)
+    # print ("features.len: ", len(features))
+    # print ("features.shape: ", features.shape)
+    # print ("targets: ", targets)
+    # print ("targets.len: ", len(targets))
+    # print ("targets.shape: ", targets.shape)
+    
     return (features, targets)
 
 
 def     init_variables():
     weights = np.random.normal(size=13)
-    weights = weights.astype(np.float128)
+    # weights = weights.astype(np.float128)
     bias = 0
+
+    # print ("weights: ", weights)
+    # print ("bias: ", bias)
+    
     return (weights, bias)
 
 
-def     cost(predictions, targets):
-    ret = np.nanmean((predictions - targets) ** 2)
-    return ret
-
 
 def     pre_activation(features, weights, bias):
-    ret = np.dot(features, weights) + bias
-    ret = ret.astype(np.float128)
-    return ret
+    z = np.dot(features, weights) + bias
+    z = z.astype(np.float128)
+    
+    # print ("features: ", features)
+    # print ("targets: ", targets)
+    # print ("weights: ", weights)
+    # print ("bias: ", bias)
+    # print ("z: ", z)
+    
+    return (z)
 
 
 def     activation(z):
-    return 1 / (1 + np.exp(-z))
+    y = 1.0 / (1.0 + np.exp(-z))
+    
+    # print ("z: ", z)
+    # print ("y: ", y)
+    
+    return (y)
 
 
-def     derivative_activation(z):
-    return activation(z) * (1 - activation(z))
-
-
-def     predict(features, weights, bias):
+def     cost(features, targets, weithts, bias):
+    m = len(features)
     z = pre_activation(features, weights, bias)
-
     y = activation(z)
-    return np.round(y)
+    y[(y == 1)] = 0.999 
+    y[(y == 0)] = 0.001 
+    cost = (-(1 / m) * np.nansum(targets * np.log(y) + (1 - targets) * np.log(1 - y)))
+    
+    # print ("features: ", features)
+    # print ("___________________________________________________")
+    # print ("targets: ", targets)
+    # print ("___________________________________________________")
+    # print ("weights: ", weights)
+    # print ("___________________________________________________")
+    # print ("bias: ", bias)
+    # print ("___________________________________________________")
+    # print ("z: ", z)
+    # print ("___________________________________________________")
+    # print ("y: ", y)
+    # print ("___________________________________________________")
+    # print ("m: ", m)
+    # print ("___________________________________________________")
+    # print ("cost: ", cost)
+    # print ("___________________________________________________")
+
+    return (cost)
+
+
+def     derivative_cost(features, targets, weithts, bias):
+    m = len(features)
+    z = pre_activation(features, weights, bias)
+    y = activation(z)
+    grad = 1 / m * np.dot(features.transpose(), (y - targets))
+    
+    # print ("features: ", features)
+    # print ("features.len: ", len(features))
+    # print ("targets: ", targets)
+    # print ("weights: ", weights)
+    # print ("bias: ", bias)
+    # print ("z: ", z)
+    # print ("y: ", y)
+    # print ("grad: ", grad)
+
+    return (grad)
 
 
 def     train(features, target, weights, bias):
-    predictions = predict(features, weights, bias)
-    predictions = predictions.astype(np.float128) 
-    print("Accuracy = %s" % np.mean(predictions == targets))
     
-    epochs = 100
-    learning_rate = 0.1
     
-    for epoch in range(epochs):
-        if epoch % 10 == 0:
-            predictions = activation(pre_activation(features, weights, bias))
-            # print("weights: ", weights)
-            # print("predictions: ", predictions)
-        weights_gradients = np.zeros(weights.shape)
-        bias_gradient = 0.
-        for feature, target in zip(features, targets):
-            if not np.isnan(feature).any():
-                z = pre_activation(feature, weights, bias)
-                y = activation(z)
-                print("test:  !!!!!!!!!!!!!!", y)
-                weights_gradients += (y - target) * derivative_activation(z) * feature
-                # print("test:  !!!!!!!!!!!!!!", derivative_activation(z))
-                bias_gradient += (y - target) * derivative_activation(z)
-        weights = weights - (learning_rate * weights_gradients)
-        bias = bias - (learning_rate * bias_gradient)
-    predictions = predict(features, weights, bias)
-    print("weights: ", weights)
-    print("predictions: ", predictions)
-    print("Accuracy = %s" % np.mean(predictions == targets))
+    # print ("features: ", features)
+    # print ("targets: ", targets)
+    # print ("weights: ", weights)
+    # print ("bias: ", bias)
+    # print ("z: ", z)
+    print ("y: ", activation(z))
+    # print ("m: ", m)
+    print ("cost :", cost(features, targets, weights, bias))
+    
     return
 
 
@@ -89,3 +127,5 @@ if __name__ == '__main__':
     features, targets = set_data("dataset_train.csv")
     weights, bias = init_variables()
     train(features, targets, weights, bias)
+    
+    # print (derivative_cost(features, targets, weights, bias))
