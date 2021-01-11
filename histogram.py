@@ -7,9 +7,12 @@ import math
 from describe import init_dataset
 from sys import argv
 
+
 #---------------------------------------------------------------------
 
+
 def     histogram():
+    
     dataset = init_dataset('dataset_train.csv')
     data = dataset[1:, :]
     data = data[data[:, 1].argsort()]
@@ -33,7 +36,9 @@ def     histogram():
     plt.show()
     return
 
+
 def     figure():
+
     dataset = init_dataset('dataset_train.csv')
     data = dataset[1:, :]
     data = data[data[:, 1].argsort()]
@@ -57,7 +62,9 @@ def     figure():
     plt.show()
     return    
 
+
 #---------------------------------------------------------------------
+
 
 if __name__ == "__main__":
     histogram()

@@ -3,9 +3,12 @@ import csv
 import math
 from sys import argv
 
+
 #---------------------------------------------------------------------
 
+
 def     percentile(N, percent):
+    
     N.sort()
     k = (len(N) - 1) * percent
     f = math.floor(k)
@@ -18,6 +21,7 @@ def     percentile(N, percent):
 
 
 def     equart_type(X, mean):
+
     total = 0
     for x in X:
         total = total + (x - mean) ** 2
@@ -25,6 +29,7 @@ def     equart_type(X, mean):
 
 
 def     init_dataset(data_path):
+
     dataset = list()
     with open(data_path) as csvfile:
         reader = csv.reader(csvfile)
@@ -45,6 +50,7 @@ def     init_dataset(data_path):
 
 
 def     describe():
+
     if len(argv) > 1:
         data = init_dataset(argv[1])
     else:
@@ -89,7 +95,9 @@ def     describe():
             print(f'{"No value":>15}', end='')
         print("")
 
+
 #---------------------------------------------------------------------
+
 
 if __name__ == "__main__":
     describe()

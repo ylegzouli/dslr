@@ -14,15 +14,9 @@ def     set_data(data_path):
     targets[(targets != 'Gryffindor')] = 0. 
     targets[(targets == 'Gryffindor')] = 1.
     targets = targets.astype(np.float128) 
-     # np.where(np.isfinite(features), features, 0)
-    # features = features[~np.isnan(features)]
     
     # print ("features: ", features)
-    # print ("features.len: ", len(features))
-    # print ("features.shape: ", features.shape)
     # print ("targets: ", targets)
-    # print ("targets.len: ", len(targets))
-    # print ("targets.shape: ", targets.shape)
     
     return (features, targets)
 
@@ -42,7 +36,6 @@ def     init_variables():
 def     pre_activation(features, weights, bias):
 
     z = np.dot(features, weights) + bias
-    z = z.astype(np.float128)
     
     # print ("features: ", features)
     # print ("targets: ", targets)
@@ -68,17 +61,17 @@ def     cost(features, targets, weithts, bias):
     m = len(features)
     z = pre_activation(features, weights, bias)
     y = activation(z)
-    y[(y == 1)] = 0.999 
-    y[(y == 0)] = 0.001 
+    y[(y == 1)] = 0.99999 
+    y[(y == 0)] = 0.00001 
     cost = (-(1 / m) * np.nansum(targets * np.log(y) + (1 - targets) * np.log(1 - y)))
     
     # print ("features: ", features)
     # print ("targets: ", targets)
     # print ("weights: ", weights)
     # print ("bias: ", bias)
+    # print ("m: ", m)
     # print ("z: ", z)
     # print ("y: ", y)
-    # print ("m: ", m)
     # print ("cost: ", cost)
 
     return (cost)
@@ -94,10 +87,10 @@ def     gradient(features, targets, weithts, bias):
     grad = 1 / m * np.nansum(tr_features * diff)
 
     # print ("features: ", features)
-    # print ("m: ", m)
     # print ("targets: ", targets)
     # print ("weights: ", weights)
     # print ("bias: ", bias)
+    # print ("m: ", m)
     # print ("z: ", z)
     # print ("y: ", y)
     # print ("gradient: ", grad)
@@ -106,7 +99,17 @@ def     gradient(features, targets, weithts, bias):
 
 
 def     train(features, target, weights, bias):
-    
+
+    epochs = 100
+    learning_rate = 0.1
+    z = pre_activation(features, weights, bias) 
+    y = activation(z)
+
+    # print("Accuracy: ", np.mean(np.round(activation(pre_activation(features, weights, bias)) == targets))) 
+    # for epoch in range(epochs):
+    #     if epoch % 10 == 0:
+    #         print ("y: ", activation(pre_activation(features, weights, bias)))
+
     print ("features: ", features)
     print ("targets: ", targets)
     print ("weights: ", weights)
@@ -117,7 +120,7 @@ def     train(features, target, weights, bias):
     print ("gradient :", gradient(features, targets, weights, bias))
     print("Accuracy: ", np.mean(np.round(activation(pre_activation(features, weights, bias)) == targets))) 
 
-    return
+    return (weights, bias)
 
 
 #---------------------------------------------------------------------
@@ -125,4 +128,4 @@ def     train(features, target, weights, bias):
 if __name__ == '__main__':
     features, targets = set_data("dataset_train.csv")
     weights, bias = init_variables()
-    train(features, targets, weights, bias)
+    weights, bias = train(features, targets, weights, bias)
