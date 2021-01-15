@@ -83,7 +83,7 @@ def     gradient(features, targets, weithts, bias):
     z = pre_activation(features, weights, bias)
     y = activation(z)
     tr_features = features.transpose()
-    diff = y - targets
+    diff = targets - y
     grad = 1 / m * np.nansum(tr_features * diff)
 
     # print ("features: ", features)
@@ -100,24 +100,28 @@ def     gradient(features, targets, weithts, bias):
 
 def     train(features, target, weights, bias):
 
-    epochs = 100
-    learning_rate = 0.1
-    z = pre_activation(features, weights, bias) 
-    y = activation(z)
+    epochs = 1000
+    learning_rate = 0.001
 
-    # print("Accuracy: ", np.mean(np.round(activation(pre_activation(features, weights, bias)) == targets))) 
-    # for epoch in range(epochs):
-    #     if epoch % 10 == 0:
-    #         print ("y: ", activation(pre_activation(features, weights, bias)))
+    print("Accuracy: ", np.mean(np.round(activation(pre_activation(features, weights, bias)) == targets))) 
+    for epoch in range(epochs):
+        if epoch % 10 == 0:
+            print ("cost :", cost(features, targets, weights, bias))
+            # print ("z: ", pre_activation(features, weights, bias))
+            # print ("y: ", activation(pre_activation(features, weights, bias)))
+            # print ("weights: ", weights)
+        grad = gradient(features, target, weights, bias)
+        weights = weights - learning_rate * grad
+        # bias = bias - learning_rate * grad
 
-    print ("features: ", features)
-    print ("targets: ", targets)
-    print ("weights: ", weights)
-    print ("bias: ", bias)
-    print ("z: ", pre_activation(features, weights, bias))
-    print ("y: ", activation(pre_activation(features, weights, bias)))
-    print ("cost :", cost(features, targets, weights, bias))
-    print ("gradient :", gradient(features, targets, weights, bias))
+    # print ("features: ", features)
+    # print ("targets: ", targets)
+    # print ("weights: ", weights)
+    # print ("bias: ", bias)
+    # print ("z: ", pre_activation(features, weights, bias))
+    # print ("y: ", activation(pre_activation(features, weights, bias)))
+    # print ("cost :", cost(features, targets, weights, bias))
+    # print ("gradient :", gradient(features, targets, weights, bias))
     print("Accuracy: ", np.mean(np.round(activation(pre_activation(features, weights, bias)) == targets))) 
 
     return (weights, bias)

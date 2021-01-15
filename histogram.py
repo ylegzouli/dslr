@@ -58,7 +58,8 @@ def     figure():
         h4 = X[1299:]
         h4 = h4[~np.isnan(h4)]
         plt.hist(h4, color='green', alpha=0.5)
-        plt.title(dataset[0, 6])
+        plt.title(dataset[0, i + 5])
+        plt.subplots_adjust(hspace = .001)
     plt.show()
     return    
 
@@ -67,5 +68,5 @@ def     figure():
 
 
 if __name__ == "__main__":
-    histogram()
+    # histogram()
     figure()
