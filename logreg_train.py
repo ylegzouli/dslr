@@ -1,47 +1,39 @@
 import numpy as np
-import matplotlib.pyplot as plt
-import math
-from describe import init_dataset
+import pandas as pd
+from sys import argv
 
 #---------------------------------------------------------------------
 
+def     scale(features):
+
+    for i in range(len(features)):
+        features[i] = ( features[i] - features.mean())  / features.std()
+
+    return features
+
+
 def     set_data(data_path):
- 
-    data = init_dataset(data_path)
-    features = data[1:, 6:]
-    features = features.astype(np.float128)
-    targets = data[1:, 1]
-    targets[(targets != 'Gryffindor')] = 0. 
-    targets[(targets == 'Gryffindor')] = 1.
-    targets = targets.astype(np.float128) 
-    
-    # print ("features: ", features)
-    # print ("targets: ", targets)
-    
+
+    data = pd.read_csv(data_path, index_col = "Index")
+    data = data.dropna()
+    features = np.array((data.iloc[:,5:]))
+    targets = np.array(data.loc[:,"Hogwarts House"])
+    np.apply_along_axis(scale, 0, features)
+
     return (features, targets)
 
 
-def     init_variables():
+def     init_variables(features):
 
-    weights = np.random.normal(size=13)
-    bias = 0
-
-    # print ("weights: ", weights)
-    # print ("bias: ", bias)
+    weights = np.ones(features.shape[1])
     
-    return (weights, bias)
+    return (weights)
 
 
 
-def     pre_activation(features, weights, bias):
+def     pre_activation(features, weights):
 
-    z = np.dot(features, weights) + bias
-    
-    # print ("features: ", features)
-    # print ("targets: ", targets)
-    # print ("weights: ", weights)
-    # print ("bias: ", bias)
-    # print ("z: ", z)
+    z = np.dot(features, weights)
     
     return (z)
 
@@ -50,86 +42,73 @@ def     activation(z):
 
     y = 1.0 / (1.0 + np.exp(-z))
     
-    # print ("z: ", z)
-    # print ("y: ", y)
-    
     return (y)
 
 
-def     cost(features, targets, weithts, bias):
+def     gradient(features, targets, weights):
 
-    m = len(features)
-    z = pre_activation(features, weights, bias)
-    y = activation(z)
-    y[(y == 1)] = 0.99999 
-    y[(y == 0)] = 0.00001 
-    cost = (-(1 / m) * np.nansum(targets * np.log(y) + (1 - targets) * np.log(1 - y)))
-    
-    # print ("features: ", features)
-    # print ("targets: ", targets)
-    # print ("weights: ", weights)
-    # print ("bias: ", bias)
-    # print ("m: ", m)
-    # print ("z: ", z)
-    # print ("y: ", y)
-    # print ("cost: ", cost)
-
-    return (cost)
-
-
-def     gradient(features, targets, weithts, bias):
-
-    m = len(features)
-    z = pre_activation(features, weights, bias)
+    z = pre_activation(features, weights)
     y = activation(z)
     tr_features = features.transpose()
     diff = targets - y
-    grad = 1 / m * np.nansum(tr_features * diff)
-
-    # print ("features: ", features)
-    # print ("targets: ", targets)
-    # print ("weights: ", weights)
-    # print ("bias: ", bias)
-    # print ("m: ", m)
-    # print ("z: ", z)
-    # print ("y: ", y)
-    # print ("gradient: ", grad)
+    grad = np.dot(tr_features, diff)
 
     return (grad)
 
 
-def     train(features, target, weights, bias):
+def     train(features, target, weights):
 
-    epochs = 1000
+    epochs = 300
     learning_rate = 0.001
-
-    print("Accuracy: ", np.mean(np.round(activation(pre_activation(features, weights, bias)) == targets))) 
     for epoch in range(epochs):
         if epoch % 10 == 0:
-            print ("cost :", cost(features, targets, weights, bias))
-            # print ("z: ", pre_activation(features, weights, bias))
-            # print ("y: ", activation(pre_activation(features, weights, bias)))
-            # print ("weights: ", weights)
-        grad = gradient(features, target, weights, bias)
-        weights = weights - learning_rate * grad
-        # bias = bias - learning_rate * grad
+            print (weights[0])
+        grad = gradient(features, target, weights)
+        weights = weights + learning_rate * grad
 
-    # print ("features: ", features)
-    # print ("targets: ", targets)
-    # print ("weights: ", weights)
-    # print ("bias: ", bias)
-    # print ("z: ", pre_activation(features, weights, bias))
-    # print ("y: ", activation(pre_activation(features, weights, bias)))
-    # print ("cost :", cost(features, targets, weights, bias))
-    # print ("gradient :", gradient(features, targets, weights, bias))
-    print("Accuracy: ", np.mean(np.round(activation(pre_activation(features, weights, bias)) == targets))) 
-
-    return (weights, bias)
+    return (weights)
 
 
 #---------------------------------------------------------------------
 
-if __name__ == '__main__':
+
+def predict_one(x, weights):
+    
+    return max((x.dot(w), t) for w, t in weights)[1]
+
+
+def predict(features, weights):
+
+    feature = np.insert(features, 0, 1, axis=1) 
+
+    return [predict_one(i, weights) for i in feature]
+
+
+def accuracy(data_path, weights):
+
+    data = pd.read_csv(data_path, index_col = "Index")
     features, targets = set_data("dataset_train.csv")
-    weights, bias = init_variables()
-    weights, bias = train(features, targets, weights, bias)
+
+    return sum(predict(features, weights) == targets) / len(targets)   
+
+
+#---------------------------------------------------------------------
+
+def     main():
+    if not len(argv) > 1:
+        print('Please input the path as first argument.')
+        return
+    features, targets = set_data(argv[1])
+    features = np.insert(features, 0, 1, axis=1)
+    weights_save = []
+    for i in np.unique(targets):
+        y = np.where(targets == i, 1, 0)    
+        weights = init_variables(features)
+        weights = train(features, y, weights)
+        weights_save.append((weights, i))
+    np.save("weights", weights_save)
+    print ("Accuracy: ", accuracy("dataset_train.csv", weights_save))
+
+
+if __name__ == '__main__':
+    main()

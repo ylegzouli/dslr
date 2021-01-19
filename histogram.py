@@ -68,5 +68,5 @@ def     figure():
 
 
 if __name__ == "__main__":
-    # histogram()
+    histogram()
     figure()

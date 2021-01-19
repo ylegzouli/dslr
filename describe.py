@@ -54,7 +54,7 @@ def     describe():
     if len(argv) > 1:
         data = init_dataset(argv[1])
     else:
-        print('input the path as first argument.')
+        print('Please input the path as first argument.')
         return
     features = data[0]
     dataset = data[1:,0:]
