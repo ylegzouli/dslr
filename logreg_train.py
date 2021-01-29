@@ -23,14 +23,6 @@ def     set_data(data_path):
     return (features, targets)
 
 
-def     init_variables(features):
-
-    weights = np.ones(features.shape[1])
-    
-    return (weights)
-
-
-
 def     pre_activation(features, weights):
 
     z = np.dot(features, weights)
@@ -103,7 +95,7 @@ def     main():
     weights_save = []
     for i in np.unique(targets):
         y = np.where(targets == i, 1, 0)    
-        weights = init_variables(features)
+        weights = np.ones(features.shape[1])
         weights = train(features, y, weights)
         weights_save.append((weights, i))
     np.save("weights", weights_save)
