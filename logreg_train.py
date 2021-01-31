@@ -64,7 +64,7 @@ def     train(features, target, weights):
 #---------------------------------------------------------------------
 
 
-def predict_one(x, weights):
+def predict_line(x, weights):
     
     return max((x.dot(w), t) for w, t in weights)[1]
 
@@ -73,7 +73,7 @@ def predict(features, weights):
 
     feature = np.insert(features, 0, 1, axis=1) 
 
-    return [predict_one(i, weights) for i in feature]
+    return [predict_line(i, weights) for i in feature]
 
 
 def accuracy(data_path, weights):
