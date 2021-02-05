@@ -58,7 +58,7 @@ def     describe():
         return
     features = data[0]
     dataset = data[1:,0:]
-    print(f'{"":30} |{"Count":>20} |{"Mean":>20} |{"Std":>20} |{"Min":>20} |{"25%":>20} |{"50%":>20} |{"75%":>20} |{"Max":>20}')
+    print(f'{"":29} |{"Count":>19} |{"Mean":>19} |{"Std":>19} |{"Min":>19} |{"25%":>19} |{"50%":>19} |{"75%":>19} |{"Max":>19}')
     for i in range(0, len(features)):
         size = 0
         total = 0
@@ -66,7 +66,7 @@ def     describe():
         maxi = - np.inf
         row_sort = []
         try:
-            print(f'{features[i]:>30}' , end=' |')
+            print(f'{features[i]:>29}' , end=' |')
             row = np.array(dataset[:, i], dtype=float)
             row = row[~np.isnan(row)]
             for j in range(0, len(row)):
@@ -80,17 +80,17 @@ def     describe():
             if size == 0:
                 raise Exception()
             row_sort.sort()
-            print(f'{size:>20}', end=' |')
-            print(f'{total/size:>20}', end=' |')
-            print(f'{equart_type(row, total/size):>20}', end=' |')
-            print(f'{mini:>20}', end=' |')
-            print(f'{row_sort[math.ceil(size/4) - 1]:>20}', end=' |')
+            print(f'{size:>19}', end=' |')
+            print(f'{total/size:>19}', end=' |')
+            print(f'{equart_type(row, total/size):>19}', end=' |')
+            print(f'{mini:>19}', end=' |')
+            print(f'{row_sort[math.ceil(size/4) - 1]:>19}', end=' |')
             # print(f'{percentile(row, 0.25):>20}', end=' |')
-            print(f'{row_sort[math.ceil(size/2) - 1]:>20}', end=' |')
+            print(f'{row_sort[math.ceil(size/2) - 1]:>19}', end=' |')
             # print(f'{percentile(row, 0.50):>20}', end=' |')
-            print(f'{row_sort[math.ceil(3*size/4) - 1]:>20}', end=' |')
+            print(f'{row_sort[math.ceil(3*size/4) - 1]:>19}', end=' |')
             # print(f'{percentile(row, 0.75):>20}', end=' |')
-            print(f'{maxi:>20}', end=' |')
+            print(f'{maxi:>19}', end=' |')
         except:
             print(f'{"No value":>15}', end='')
         print("")

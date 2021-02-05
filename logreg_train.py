@@ -64,19 +64,19 @@ def     train(features, target, weights):
 #---------------------------------------------------------------------
 
 
-def predict_line(x, weights):
+def     predict_line(x, weights):
     
     return max((x.dot(w), t) for w, t in weights)[1]
 
 
-def predict(features, weights):
+def     predict(features, weights):
 
     feature = np.insert(features, 0, 1, axis=1) 
 
     return [predict_line(i, weights) for i in feature]
 
 
-def accuracy(data_path, weights):
+def     accuracy(data_path, weights):
 
     data = pd.read_csv(data_path, index_col = "Index")
     features, targets = set_data("dataset_train.csv")

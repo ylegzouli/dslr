@@ -6,7 +6,6 @@ from describe import init_dataset
 
 #---------------------------------------------------------------------
 
-
 def     scale(features):
 
     for i in range(len(features)):
@@ -39,8 +38,9 @@ def     get_mean():
     return (mean)
         
 
-def     replace_nan(features, mean):
+def     replace_nan(features):
 
+    mean = get_mean()
     for j in range(features.shape[1]):
         for i in range(features[:, j].shape[0]):
             if math.isnan(features[i, j]):
@@ -52,9 +52,8 @@ def     replace_nan(features, mean):
 def     set_data():
 
     data = pd.read_csv(argv[1], index_col = "Index")
-    mean = get_mean()
     features = np.array((data.iloc[:,5:]))
-    features = replace_nan(features, mean)
+    features = replace_nan(features)
     np.apply_along_axis(scale, 0, features)
     weights = np.load(argv[2], allow_pickle=True)
     targets = np.array(data.loc[:,"Hogwarts House"])
@@ -65,12 +64,12 @@ def     set_data():
 #---------------------------------------------------------------------
 
 
-def predict_line(x, weights):
+def     predict_line(x, weights):
     
     return max((x.dot(w), t) for w, t in weights)[1]
 
 
-def predict(features, weights):
+def     predict(features, weights):
 
     feature = np.insert(features, 0, 1, axis=1) 
 
@@ -88,7 +87,8 @@ def     main():
     features, weights, test_target = set_data()
     targets = predict(features, weights)
     print (targets) 
-    
+    houses = pd.DataFrame(({'Index':range(len(targets)), 'Hogwarts House':targets}))
+    houses.to_csv('houses.csv', index=False) 
     # for i in range(len(targets)):
     #     print (targets[i])
     #     print (test_target[i])
