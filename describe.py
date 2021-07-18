@@ -6,7 +6,6 @@ from sys import argv
 
 #---------------------------------------------------------------------
 
-
 def     percentile(N, percent):
     
     N.sort()
@@ -54,7 +53,7 @@ def     describe():
     if len(argv) > 1:
         data = init_dataset(argv[1])
     else:
-        print('Please input the path as first argument.')
+        print('Please input the data path as first argument.')
         return
     features = data[0]
     dataset = data[1:,0:]
