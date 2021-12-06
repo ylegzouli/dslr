@@ -1,18 +1,16 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-import csv
-import math
 from describe import init_dataset
 from sys import argv
 
 
-#---------------------------------------------------------------------
-
 
 def     histogram():
-    
-    dataset = init_dataset('dataset_train.csv')
+    if not len(argv) > 1:
+        print('Please input the data path as first argument.')
+        return
+    dataset = init_dataset(argv[1])
     data = dataset[1:, :]
     data = data[data[:, 1].argsort()]
     X = np.array(data[:, 16], dtype=float)
@@ -33,12 +31,13 @@ def     histogram():
     plt.xlabel("Mark")
     plt.ylabel("Nb student")
     plt.show()
-    return
 
 
 def     figure():
-
-    dataset = init_dataset('dataset_train.csv')
+    if not len(argv) > 1:
+        print('Please input the data path as first argument.')
+        return
+    dataset = init_dataset(argv[1])
     data = dataset[1:, :]
     data = data[data[:, 1].argsort()]
     plt.figure(figsize=(15, 8))
@@ -60,10 +59,6 @@ def     figure():
         plt.title(dataset[0, i + 5])
         plt.subplots_adjust(hspace = .001)
     plt.show()
-    return    
-
-
-#---------------------------------------------------------------------
 
 
 if __name__ == "__main__":

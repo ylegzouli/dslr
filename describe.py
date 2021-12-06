@@ -4,10 +4,7 @@ import math
 from sys import argv
 
 
-#---------------------------------------------------------------------
-
 def     percentile(N, percent):
-    
     N.sort()
     k = (len(N) - 1) * percent
     f = math.floor(k)
@@ -20,7 +17,6 @@ def     percentile(N, percent):
 
 
 def     equart_type(X, mean):
-
     total = 0
     for x in X:
         total = total + (x - mean) ** 2
@@ -28,7 +24,6 @@ def     equart_type(X, mean):
 
 
 def     init_dataset(data_path):
-
     dataset = list()
     with open(data_path) as csvfile:
         reader = csv.reader(csvfile)
@@ -49,7 +44,6 @@ def     init_dataset(data_path):
 
 
 def     describe():
-
     if len(argv) > 1:
         data = init_dataset(argv[1])
     else:
@@ -84,18 +78,12 @@ def     describe():
             print(f'{equart_type(row, total/size):>19}', end=' |')
             print(f'{mini:>19}', end=' |')
             print(f'{row_sort[math.ceil(size/4) - 1]:>19}', end=' |')
-            # print(f'{percentile(row, 0.25):>20}', end=' |')
             print(f'{row_sort[math.ceil(size/2) - 1]:>19}', end=' |')
-            # print(f'{percentile(row, 0.50):>20}', end=' |')
             print(f'{row_sort[math.ceil(3*size/4) - 1]:>19}', end=' |')
-            # print(f'{percentile(row, 0.75):>20}', end=' |')
             print(f'{maxi:>19}', end=' |')
         except:
             print(f'{"No value":>15}', end='')
         print("")
-
-
-#---------------------------------------------------------------------
 
 
 if __name__ == "__main__":
