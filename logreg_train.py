@@ -13,6 +13,7 @@ def     set_data(data_path):
     try:
         data = pd.read_csv(data_path, index_col = "Index")
         data = data.dropna()
+        print(data)
         features = np.array((data.iloc[:,5:]))
         targets = np.array(data.loc[:,"Hogwarts House"])
         np.apply_along_axis(scale, 0, features)
@@ -71,7 +72,7 @@ def     main():
         print('Please input the path as first argument.')
         return
     if argv[1] == 'dataset_test.csv':
-        print('Please use with train data')
+        print('Please use train data')
         return
     try:
         features, targets = set_data(argv[1])
